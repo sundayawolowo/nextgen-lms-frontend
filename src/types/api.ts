@@ -172,5 +172,6 @@ export interface CourseEditor extends CourseSummary {
     publish: boolean
     archive: boolean
     manage_instructors: boolean
+    manage_learners: boolean
   }
 }

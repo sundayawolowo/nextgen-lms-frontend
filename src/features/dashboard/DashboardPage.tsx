@@ -8,6 +8,8 @@ import { api } from '../../lib/api'
 import { humanise } from '../../lib/format'
 import { useWorkspace } from '../../stores/workspace'
 import type { CourseSummary, Member } from '../../types/api'
+import type { MyCourse } from '../../types/learning'
+import { MyCourseCard } from '../learning/LearningPages'
 import { useCurrentOrganisation, useMe } from '../auth/hooks'
 
 export function DashboardPage() {
@@ -34,6 +36,11 @@ export function DashboardPage() {
     enabled: !!organisation && can('organisation.courses.view'),
   })
 
+  const learning = useQuery({
+    queryKey: ['learn', 'courses', { status: 'active', page: 1 }],
+    queryFn: () => api.page<MyCourse>('/learn/courses', { status: 'active' }),
+  })
+
   if (!me) return null
   const firstName = me.name.split(' ')[0]
 
@@ -58,6 +65,22 @@ export function DashboardPage() {
         <Stat icon={<GraduationCap className="size-5" />} label="Courses I teach" value={teaching.data?.meta.total} to="/studio" />
         <Stat icon={<Store className="size-5" />} label="Marketplace" value="Browse" to="/marketplace" />
       </div>
+
+      {learning.data && learning.data.items.length > 0 && (
+        <section className="mt-8">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="font-semibold">Continue learning</h2>
+            <Link to="/learn" className="text-sm font-medium text-brand-700 hover:underline">
+              See all
+            </Link>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {learning.data.items.slice(0, 3).map((item) => (
+              <MyCourseCard key={item.enrolment.uuid} item={item} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <Card className="p-6">

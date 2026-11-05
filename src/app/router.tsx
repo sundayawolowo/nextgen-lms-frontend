@@ -7,6 +7,8 @@ import { useMe } from '../features/auth/hooks'
 import { CourseEditorPage } from '../features/courses/CourseEditorPage'
 import { NewCoursePage, OrganisationCoursesPage, StudioPage } from '../features/courses/CourseListPages'
 import { DashboardPage } from '../features/dashboard/DashboardPage'
+import { LibraryPage, MyLearningPage, PreviewLessonPage } from '../features/learning/LearningPages'
+import { PlayerPage } from '../features/learning/PlayerPage'
 import { CourseDetailPage, MarketplacePage } from '../features/marketplace/MarketplacePages'
 import {
   AcceptInvitationPage,
@@ -40,6 +42,7 @@ export const routes = [
     children: [
       { path: '/marketplace', element: <MarketplacePage /> },
       { path: '/marketplace/:slug', element: <CourseDetailPage /> },
+      { path: '/marketplace/:slug/preview/:lesson', element: <PreviewLessonPage /> },
     ],
   },
 
@@ -64,6 +67,8 @@ export const routes = [
     ),
     children: [
       { path: '/dashboard', element: <DashboardPage /> },
+      { path: '/learn', element: <MyLearningPage /> },
+      { path: '/org/library', element: <LibraryPage /> },
       { path: '/organisations/new', element: <CreateOrganisationPage /> },
       { path: '/studio', element: <StudioPage /> },
       { path: '/studio/new', element: <NewCoursePage scope="personal" /> },
@@ -75,6 +80,10 @@ export const routes = [
       { path: '/admin/reviews', element: <ReviewQueuePage /> },
     ],
   },
+
+  // Full-screen course player
+  { path: '/learn/:courseUuid', element: <RequireAuth><PlayerPage /></RequireAuth> },
+  { path: '/learn/:courseUuid/:lessonUuid', element: <RequireAuth><PlayerPage /></RequireAuth> },
 
   { element: <Outlet />, children: [{ path: '*', element: <NotFound /> }] },
 ]

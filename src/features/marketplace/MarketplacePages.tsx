@@ -2,10 +2,11 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { CheckCircle2, Clock, FileText, Lock, PlayCircle, Search } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router'
-import { Badge, Button, EmptyState, ErrorState, Input, Pagination, Select, Spinner } from '../../components/ui'
+import { Badge, EmptyState, ErrorState, Input, Pagination, Select, Spinner } from '../../components/ui'
 import { api } from '../../lib/api'
 import { formatDuration, formatPrice, humanise } from '../../lib/format'
 import type { CoursePublic, CourseSummary } from '../../types/api'
+import { EnrolButton } from '../learning/EnrolButton'
 import { CourseCard, CourseThumb } from './CourseCard'
 import { flattenCategories, useCategories } from './useCategories'
 
@@ -165,10 +166,8 @@ export function CourseDetailPage() {
             <CourseThumb course={c} className="h-40" />
             <div className="space-y-3 p-5">
               <p className="text-2xl font-semibold text-navy-900">{formatPrice(c.price_minor, c.currency)}</p>
-              <Button className="w-full" disabled title="Enrolment arrives in the next release">
-                {c.is_free ? 'Enrol for free' : 'Buy course'}
-              </Button>
-              <p className="text-xs text-slate-500">Enrolment opens in the next release.</p>
+              <EnrolButton courseUuid={c.uuid} isFree={c.is_free} />
+              <p className="text-xs text-slate-500">{c.lessons_count} lessons · {formatDuration(c.duration_seconds)} · learn at your own pace</p>
             </div>
           </div>
         </div>
@@ -201,7 +200,13 @@ export function CourseDetailPage() {
                       return (
                         <li key={l.uuid} className="flex items-center gap-3 px-5 py-2.5 text-sm">
                           <Icon className="size-4 text-slate-400" aria-hidden />
-                          <span className="flex-1">{l.title}</span>
+                          {l.is_preview ? (
+                            <Link to={`/marketplace/${c.slug}/preview/${l.uuid}`} className="flex-1 text-brand-700 hover:underline">
+                              {l.title}
+                            </Link>
+                          ) : (
+                            <span className="flex-1">{l.title}</span>
+                          )}
                           {l.is_preview ? <Badge tone="green">Preview</Badge> : <Lock className="size-3.5 text-slate-300" aria-label="Locked" />}
                           <span className="w-12 text-right text-slate-500">{formatDuration(l.duration_seconds)}</span>
                         </li>

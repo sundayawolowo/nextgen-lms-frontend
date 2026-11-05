@@ -4,6 +4,8 @@ import {
   Building2,
   ClipboardCheck,
   GraduationCap,
+  Library,
+  PlayCircle,
   LayoutDashboard,
   LogOut,
   Mail,
@@ -39,12 +41,14 @@ export function AppLayout() {
 
   const personal: NavItem[] = [
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { to: '/learn', label: 'My learning', icon: PlayCircle },
     { to: '/marketplace', label: 'Browse courses', icon: Store },
     { to: '/studio', label: 'My teaching', icon: GraduationCap },
   ]
 
   const organisationItems: NavItem[] = organisation
     ? [
+        { to: '/org/library', label: 'Library', icon: Library },
         ...(can('organisation.courses.view') ? [{ to: '/org/courses', label: 'Courses', icon: BookOpen }] : []),
         ...(can('organisation.members.view') ? [{ to: '/org/members', label: 'Members', icon: Users }] : []),
         ...(can('organisation.members.invite') ? [{ to: '/org/invitations', label: 'Invitations', icon: Mail }] : []),

@@ -9,10 +9,11 @@ import { formatDuration, formatPrice, humanise, toMinor } from '../../lib/format
 import { notifyError } from '../../lib/forms'
 import { toast } from '../../stores/toast'
 import type { CourseEditor, InstructorRole, Lesson, LessonType, Section } from '../../types/api'
+import { LearnersTab } from '../learning/LearnersTab'
 import { flattenCategories, useCategories } from '../marketplace/useCategories'
 import { statusTone } from './CourseListPages'
 
-type Tab = 'details' | 'curriculum' | 'team'
+type Tab = 'details' | 'curriculum' | 'team' | 'learners'
 
 export function CourseEditorPage() {
   const { uuid = '' } = useParams()
@@ -67,7 +68,7 @@ export function CourseEditorPage() {
       )}
 
       <div className="mb-6 flex gap-1 border-b border-slate-200" role="tablist">
-        {(['curriculum', 'details', 'team'] as Tab[]).map((t) => (
+        {(['curriculum', 'details', 'team', 'learners'] as Tab[]).map((t) => (
           <button
             key={t}
             type="button"
@@ -87,6 +88,7 @@ export function CourseEditorPage() {
       {tab === 'details' && <DetailsForm course={c} />}
       {tab === 'curriculum' && <Curriculum course={c} />}
       {tab === 'team' && <Team course={c} />}
+      {tab === 'learners' && <LearnersTab course={c} canManage={c.permissions.manage_learners} />}
     </div>
   )
 }
@@ -118,6 +120,11 @@ function PublishActions({ course }: { course: CourseEditor }) {
 
   return (
     <div className="flex flex-wrap gap-2">
+      <Link to={`/learn/${course.uuid}`}>
+        <Button variant="secondary">
+          <PlayCircle className="size-4" /> Preview as learner
+        </Button>
+      </Link>
       {course.status === 'published' && needsReview && (
         <Link to={`/marketplace/${course.slug}`} target="_blank">
           <Button variant="secondary">
